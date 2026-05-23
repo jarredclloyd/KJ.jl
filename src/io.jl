@@ -13,6 +13,7 @@ with associated timestamps.
 - `tfile`: Path to timestamp file (for second method)
 - `format`: File format - "Agilent", "ThermoFisher", or "FIN2" (default: "Agilent")
 - `head2name`: Use file header for sample name (default: true)
+- `normalizenames`: Normalise the column names of input data (e.g. "Sr86 -> 103" becomes :Sr86_103) (default: false)
 - `nblocks`: Number of blocks to merge samples into (default: 1, no merging)
 - `absolute_buffer`: Absolute time buffer for automatic window selection (default: 2.0 seconds)
 - `relative_buffer`: Relative time buffer for automatic window selection (default: 0.1)
@@ -23,6 +24,7 @@ with associated timestamps.
 function load(dname::AbstractString;
               format::AbstractString="Agilent",
               head2name::Bool=true,
+              normalizenames::Bool=false,
               nblocks::Int=1,
               absolute_buffer::AbstractFloat=2.0,
               relative_buffer::AbstractFloat=0.1)
@@ -36,7 +38,8 @@ function load(dname::AbstractString;
                 pname = joinpath(dname,fname)
                 samp = readFile(pname;
                                 format=format,
-                                head2name=head2name)
+                                head2name=head2name,
+                                normalizenames=normalizenames)
                 push!(samples,samp)
                 push!(datetimes,samp.datetime)
             catch e
@@ -104,14 +107,17 @@ end
 
 function readFile(fname::AbstractString;
                   format::AbstractString="Agilent",
-                  head2name::Bool=true)
-    dat, sname, datetime = readDat(fname,format,head2name)
+                  head2name::Bool=true,
+                  normalizenames::Bool=false)
+    dat, sname, datetime = readDat(fname,format,head2name, normalizenames)
     return io_df2sample(dat,sname,datetime)
 end
 
 function readDat(fname::AbstractString,
                  format::AbstractString="Agilent",
-                 head2name::Bool=true)
+                 head2name::Bool=true,
+                 normalizenames::Bool=false,
+                 )
     if format=="Agilent"
         sname, datetime, header, skipto, footerskip =
             readAgilent(fname,head2name)
@@ -132,6 +138,7 @@ function readDat(fname::AbstractString,
         footerskip = footerskip,
         ignoreemptyrows = true,
         delim = ',',
+        normalizenames=normalizenames
     )
     select!(dat, [k for (k,v) in pairs(eachcol(dat)) if !all(ismissing, v)])
     return dat, sname, datetime
@@ -150,7 +157,7 @@ function readAgilent(fname::AbstractString,
     skipto = 5
     footerskip = 3
     return sname, datetime, header, skipto, footerskip
-    
+
 end
 
 function readThermoFisher(fname::AbstractString,
@@ -166,9 +173,9 @@ function readThermoFisher(fname::AbstractString,
     header = 14
     skipto = 16
     footerskip = 0
-    
+
     return sname, datetime, header, skipto, footerskip
-    
+
 end
 
 function readFIN(fname::AbstractString,
@@ -181,7 +188,7 @@ function readFIN(fname::AbstractString,
     skipto = 9
     footerskip = 0
     return sname, datetime, header, skipto, footerskip
-    
+
 end
 
 function io_df2sample(df::AbstractDataFrame,
@@ -258,21 +265,21 @@ function export2IsoplotR(ratios::AbstractDataFrame,
                    "\""*chronometer*"\":{"*datastring*"}}")
 
     if chronometer in ["Lu-Hf","Rb-Sr","K-Ca","Re-Os"]
-                        
+
         old = "\"geochronometer\":\"U-Pb\",\"plotdevice\":\"concordia\""
         new = "\"geochronometer\":\""*chronometer*"\",\"plotdevice\":\"isochron\""
         json = replace(json, old => new)
-        
+
         old = "\""*chronometer*"\":{\"format\":1,\"i2i\":true,\"projerr\":false,\"inverse\":false}"
         new = "\""*chronometer*"\":{\"format\":2,\"i2i\":true,\"projerr\":false,\"inverse\":true}"
         json = replace(json, old => new)
-        
+
     end
-    
+
     file = open(fname,"w")
     write(file,json)
     close(file)
-    
+
 end
 export export2IsoplotR
 
