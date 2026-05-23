@@ -355,3 +355,55 @@ function summarize(fit::Gfit)
     summarise(fit)
 end
 export summarise, summarize
+
+"""
+    export2csv(run::Vector{Sample}, method::Gmethod, fit::Gfit; prefix=nothing, fname="KJ.csv")
+
+Export processed ratios to CSV format.
+
+# Arguments
+- `run`: Vector of samples to export
+- `method`: Geochronology method
+- `fit`: Fitted parameters (for first method)
+- `prefix`: Optional prefix to filter samples (default: export all)
+- `fname`: Output filename (default: "KJ.csv")
+"""
+function export2csv(
+    run::Vector{Sample},
+    method::Gmethod,
+    fit::Gfit;
+    prefix=nothing,
+    fname::String="KJ_export.csv",
+)
+    ratios =
+        averat(run, method, fit)
+    if isnothing(prefix)
+        CSV.write(fname, ratios)
+    else
+        CSV.write(fname, prefix2subset(ratios, prefix))
+    end
+end
+
+"""
+    export2csv(ratios::DataFrame; prefix=nothing, fname="KJ.csv")
+
+Export processed ratios to CSV format.
+
+# Arguments
+- `ratios`: Pre-computed ratio data frame
+- `prefix`: Optional prefix to filter samples (default: export all)
+- `fname`: Output filename (default: "KJ.csv")
+"""
+function export2csv(
+    ratios::DataFrame;
+    prefix=nothing,
+    fname::String="KJ_export.csv",
+)
+    if isnothing(prefix)
+        CSV.write(fname, ratios)
+    else
+        CSV.write(fname, prefix2subset(ratios, prefix))
+    end
+end
+
+export export2csv
