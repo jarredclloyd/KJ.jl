@@ -118,13 +118,13 @@ function readDat(fname::AbstractString,
                  head2name::Bool=true,
                  normalizenames::Bool=false,
                  )
-    if format=="Agilent"
+    if contains(lowercase.(format), "agile")
         sname, datetime, header, skipto, footerskip =
             readAgilent(fname,head2name)
-    elseif format=="FIN2"
+    elseif contains(lowercase.(format), "fin")
         sname, datetime, header, skipto, footerskip =
             readFIN(fname,head2name)
-    elseif format=="ThermoFisher"
+    elseif contains(lowercase.(format), "thermo")
         sname, datetime, header, skipto, footerskip =
             readThermoFisher(fname,head2name)
     else
