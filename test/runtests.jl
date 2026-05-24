@@ -71,7 +71,7 @@ function outliertest_synthetic()
     random_values = rand(Distributions.Normal(0,1), n)
     random_values[50] = rand(Distributions.Normal(0,10),1)[1]
     outliers = detect_outliers(random_values)
-    col = fill(1,n)
+    col = ones(n)
     col[outliers] .= 0
     p1 = Plots.scatter(1:n,random_values;
                        label=nothing,
@@ -83,7 +83,7 @@ function outliertest_synthetic()
     random_matrix = Matrix(rand(mvn, n)')
     random_matrix[50,1] = rand(Distributions.Normal(3,10),1)[1]
     outliers_2 = detect_outliers(random_matrix)
-    col = fill(1,n)
+    col = ones(n)
     col[outliers_2] .= 0
     p2 = Plots.scatter(random_matrix[:,1],
                        random_matrix[:,2];
@@ -591,7 +591,7 @@ end
 function SStest()
     myrun, method, truefit = synthetictest(;drift=[0.0],down=[0.0,0.0])
     nstep = 50
-    driftss = fill(0.0,nstep)
+    driftss = zeros(nstep)
     driftfit = deepcopy(truefit)
     dd = range(start=truefit.drift[1]-1.0,stop=truefit.drift[1]+1.0,length=nstep)
     for i in eachindex(dd)
@@ -600,7 +600,7 @@ function SStest()
     end
     p = Plots.plot(dd,driftss,seriestype=:line,label="drift")
     dwn = range(start=truefit.down[2]-1.0,stop=truefit.down[2]+1.0,length=nstep)
-    downss = fill(0.0,nstep)
+    downss = zeros(nstep)
     downfit = deepcopy(truefit)
     for i in eachindex(dwn)
         downfit.down[2] = dwn[i]
@@ -768,51 +768,51 @@ end
 
 Plots.closeall()
 
-# @testset "load" begin loadtest(;verbose=true) end
-# @testset "plot raw data" begin plottest(2) end
-# @testset "set selection window" begin windowtest() end
+@testset "load" begin loadtest(;verbose=true) end
+@testset "plot raw data" begin plottest(2) end
+@testset "set selection window" begin windowtest() end
 @testset "set method and blanks" begin blanktest(;doplot=true) end
-# @testset "moving median test" begin mmediantest() end
-# @testset "outlier detection" begin outliertest_synthetic() end
-# @testset "outlier detection" begin outliertest_sample() end
-# @testset "create method" begin methodtest() end
-# @testset "assign groups" begin grouptest(true) end
-# @testset "predict Lu-Hf" begin predictest("Lu-Hf";snum=1) end
-# @testset "predict Rb-Sr" begin predictest("Rb-Sr";snum=2) end
-# @testset "predict K-Ca" begin predictest("K-Ca";snum=1) end
-# @testset "predict drift" begin driftest() end
-# @testset "predict down" begin downtest() end
-# @testset "Lu-Hf" begin processtest("Lu-Hf") end
-# @testset "Rb-Sr" begin processtest("Rb-Sr") end
-# @testset "K-Ca" begin processtest("K-Ca") end
-# @testset "U-Pb" begin processtest("U-Pb") end
-# @testset "hist" begin histest() end
-# @testset "PA test" begin PAtest() end
-# @testset "atomic test" begin atomictest("Rb-Sr") end
-# @testset "averat test" begin averatest("K-Ca") end
-# @testset "export" begin exporttest() end
-# @testset "iCap" begin iCaptest() end
-# @testset "carbonate" begin carbonatetest() end
-# @testset "timestamp" begin timestamptest() end
-# @testset "stoichiometry" begin mineraltest() end
-# @testset "concentration" begin concentrationtest() end
-# @testset "Lu-Hf internochron" begin internochrontest() end
-# @testset "UPb internochron" begin internochronUPbtest() end
-# @testset "concentration map" begin maptest() end
-# @testset "isotope ratio map" begin map_dating_test() end
-# @testset "map fail test" begin map_fail_test() end
-# @testset "glass as age standard test" begin glass_only_test() end
-# @testset "extension test" begin extensiontest() end
-# @testset "synthetic data" begin SStest() end
-# @testset "accuracy test 1" begin accuracytest() end
-# @testset "accuracy test 2" begin accuracytest(drift=[-2.0]) end
-# @testset "accuracy test 3" begin accuracytest(down=[0.0,0.5]) end
-# @testset "interference test" begin interference_test() end
-# @testset "bias test" begin biastest("Re-Os") end
-# @testset "ReOs test" begin ReOs_test() end
-# @testset "MC-ICP-MS test" begin multicollector_test() end
-# @testset "LADR2KJ test" begin LADR2KJtest() end
-# @testset "TUI test" begin TUItest() end
-# @testset "dependency test" begin dependencytest() end
+@testset "moving median test" begin mmediantest() end
+@testset "outlier detection" begin outliertest_synthetic() end
+@testset "outlier detection" begin outliertest_sample() end
+@testset "create method" begin methodtest() end
+@testset "assign groups" begin grouptest(true) end
+@testset "predict Lu-Hf" begin predictest("Lu-Hf";snum=1) end
+@testset "predict Rb-Sr" begin predictest("Rb-Sr";snum=2) end
+@testset "predict K-Ca" begin predictest("K-Ca";snum=1) end
+@testset "predict drift" begin driftest() end
+@testset "predict down" begin downtest() end
+@testset "Lu-Hf" begin processtest("Lu-Hf") end
+@testset "Rb-Sr" begin processtest("Rb-Sr") end
+@testset "K-Ca" begin processtest("K-Ca") end
+@testset "U-Pb" begin processtest("U-Pb") end
+@testset "hist" begin histest() end
+@testset "PA test" begin PAtest() end
+@testset "atomic test" begin atomictest("Rb-Sr") end
+@testset "averat test" begin averatest("K-Ca") end
+@testset "export" begin exporttest() end
+@testset "iCap" begin iCaptest() end
+@testset "carbonate" begin carbonatetest() end
+@testset "timestamp" begin timestamptest() end
+@testset "stoichiometry" begin mineraltest() end
+@testset "concentration" begin concentrationtest() end
+@testset "Lu-Hf internochron" begin internochrontest() end
+@testset "UPb internochron" begin internochronUPbtest() end
+@testset "concentration map" begin maptest() end
+@testset "isotope ratio map" begin map_dating_test() end
+@testset "map fail test" begin map_fail_test() end
+@testset "glass as age standard test" begin glass_only_test() end
+@testset "extension test" begin extensiontest() end
+@testset "synthetic data" begin SStest() end
+@testset "accuracy test 1" begin accuracytest() end
+@testset "accuracy test 2" begin accuracytest(drift=[-2.0]) end
+@testset "accuracy test 3" begin accuracytest(down=[0.0,0.5]) end
+@testset "interference test" begin interference_test() end
+@testset "bias test" begin biastest("Re-Os") end
+@testset "ReOs test" begin ReOs_test() end
+@testset "MC-ICP-MS test" begin multicollector_test() end
+@testset "LADR2KJ test" begin LADR2KJtest() end
+@testset "TUI test" begin TUItest() end
+@testset "dependency test" begin dependencytest() end
 
 # TUI(;debug=true)

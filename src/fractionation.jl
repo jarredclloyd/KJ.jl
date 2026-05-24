@@ -34,12 +34,12 @@ function fractionation!(fit::Gfit,
     end
 
     # initialise the parameters
-    init = fill(0.0,method.ndrift)
+    init = zeros(method.ndrift)
     if (method.ndown>0)
-        init = vcat(init,fill(0.0,method.ndown))
+        init = vcat(init,zeros(method.ndown))
     end
     if isfinite(method.PAcutoff)
-        init = vcat(init,fill(0.0,method.ndrift))
+        init = vcat(init,zeros(method.ndrift))
     end
 
     # define the objective function
@@ -158,7 +158,7 @@ function FCruncher(samp::Sample,
         mf = bias_correction(fit.bias[Delement],
                              method.d.ion,method.D.ion,t)
     else
-        mf = fill(1.0,length(t))
+        mf = ones(length(t))
     end
     sig = hcat(pmb,Dmb,bmb)
     covmat = df2cov(sig)

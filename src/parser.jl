@@ -119,7 +119,7 @@ function parser_lag_misfit(lower::Integer,
                            ion::AbstractVector,
                            ioff::AbstractVector,
                            totsig::AbstractVector)
-    misfit = fill(0.0,upper-lower+1)
+    misfit = zeros(upper-lower+1)
     for lag in lower:upper
         signal = totsig[lag .+ ion]
         blank = totsig[lag .+ ioff]

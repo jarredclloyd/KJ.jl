@@ -44,7 +44,7 @@ function concentrations(run::Vector{Sample},
     nr = length(run)
     ne = length(method.elements)
     nc = 2*ne
-    mat = fill(0.0,nr,nc)
+    mat = zeros(nr,nc)
     conc = nothing
     for i in eachindex(run)
         samp = run[i]

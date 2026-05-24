@@ -68,17 +68,13 @@ end
 function init_blank(method::KJmethod)
     channels = getChannels(method)
     nc = length(channels)
-    return DataFrame(fill(0.0,method.nblank,nc), channels)
+    return DataFrame(zeros(method.nblank,nc), channels)
 end
 
 function plot(blk::AbstractDataFrame,
               run::Vector{Sample})
     ns = length(run)
-    t = fill(0.0,ns)
-    y = fill(0.0,ns)
-    yf = fill(0.0,ns)
-    yl = fill(0.0,ns)
-    yu = fill(0.0,ns)
+    t, y, yf, yl, yu = zeros(ns), zeros(ns), zeros(ns), zeros(ns), zeros(ns)
     polyBlank = nrow(blk) .!= length(run)
     for i in eachindex(run)
         df = bwinData(run[i])

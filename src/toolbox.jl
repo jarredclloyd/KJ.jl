@@ -62,7 +62,7 @@ function polyVal(p::AbstractDataFrame,
                  t::AbstractVector)
     nc = size(p,2)
     nr = length(t)
-    out = DataFrame(fill(0.0,(nr,nc)),names(p))
+    out = DataFrame(zeros((nr,nc)),names(p))
     for col in names(p)
         out[:,col] = polyVal(p[:,col],t)
     end
@@ -85,13 +85,13 @@ function polyFac(p::AbstractVector,
     np = length(p)
     nt = length(t)
     if np>0
-        out = fill(0.0,nt)
+        out = zeros(nt)
         for i in 1:np
             out .+= p[i].*t.^(i-1)
         end
         return exp.(out)
     else
-        return fill(1.0,nt)
+        return ones(nt)
     end
 end
 export polyFac

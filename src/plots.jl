@@ -313,7 +313,7 @@ function plotMap(df::AbstractDataFrame,
         if ignore_negative
             selection = df[:,column] .> 0
         else
-            selection = fill(true,size(df,1))
+            selection = trues(size(df,1))
         end
         z = df[selection,column]
         if length(clims) == 0
