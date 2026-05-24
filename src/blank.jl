@@ -95,13 +95,7 @@ function plot(blk::AbstractDataFrame,
         yu[i] = Statistics.quantile(sum.(eachrow(sig)), 0.975)
     end
     p = Plots.scatter(t,y, yerror=(y-yl, yu-y), marker=:circle, label=false)
-    Plots.plot!(t,yf, label=false)
-    p_top = twiny(p)
-    plot!(
-        p_top,
-        xlims = xlims(p),
-        xticks = (t,1:ns),
-        label = false
-    )
+    o = detect_outliers(y)
+    annotate!(p, t[o], yu[o], text.(o,7,:center,:bottom))
     return p
 end
