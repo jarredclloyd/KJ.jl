@@ -67,7 +67,7 @@ function concentrations(run::Vector{Sample},
     nms = fill("",nc)
     nms[1:2:nc-1] .= names(conc)
     nms[2:2:nc] .= "s[" .* names(conc) .* "]"
-    out = hcat(DataFrame(sample=getSnames(run)),DataFrame(mat,Symbol.(nms)))
+    out = hcat(DataFrame(name=getSnames(run)),DataFrame(mat,Symbol.(nms)))
     return out
 end
 export concentrations

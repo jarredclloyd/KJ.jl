@@ -25,8 +25,10 @@ function setKJctrl!(ctrl::AbstractDict)
 end
 
 function getExt(format)
-    if format in ["Agilent","ThermoFisher"]
+    if contains(lowercase.(format), "agile") || contains(lowercase.(format), "thermo")
         return ".csv"
+    elseif contains(lowercase.(format), "fin")
+        return  ".FIN2"
     else
         return format
     end
