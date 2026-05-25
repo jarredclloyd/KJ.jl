@@ -281,7 +281,7 @@ function automatic_datetime(datetime_string::AbstractString; day_first::Bool=fal
     datetime_vector = split(datetime_string, r"[-\/ ]")
     if length(datetime_vector[1]) == 4
         date_format = "Y$(date_delim)m$(date_delim)d"
-    elseif tryparse(Int, datetime_vector[1]) > 12 || day_first === true
+    elseif day_first === true || tryparse(Int, datetime_vector[1]) > 12
         date_format = "d$(date_delim)m$(date_delim)Y"
     else
         date_format = "m$(date_delim)d$(date_delim)Y"
