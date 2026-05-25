@@ -121,7 +121,7 @@ function autoSwin(t::AbstractVector,
                   absolute_buffer::AbstractFloat=2.0,
                   relative_buffer::AbstractFloat=0.1)
     selection = (t.>=start .&& t.<=stop)
-    duration = off - on 
+    duration = off - on
     if duration > 2*absolute_buffer
         t1 = on + absolute_buffer
         t2 = off - absolute_buffer
@@ -261,7 +261,7 @@ function prefix2subset(ratios::AbstractDataFrame,
 end
 export prefix2subset
 
-function automatic_datetime(datetime_string::AbstractString)
+function automatic_datetime(datetime_string::AbstractString; day_first::Bool=false)
     if datetime_string == "n/a"
         return nothing
     elseif occursin(r"-", datetime_string)
@@ -281,7 +281,7 @@ function automatic_datetime(datetime_string::AbstractString)
     datetime_vector = split(datetime_string, r"[-\/ ]")
     if length(datetime_vector[1]) == 4
         date_format = "Y$(date_delim)m$(date_delim)d"
-    elseif tryparse(Int,datetime_vector[1]) > 12
+    elseif tryparse(Int, datetime_vector[1]) > 12 || day_first === true
         date_format = "d$(date_delim)m$(date_delim)Y"
     else
         date_format = "m$(date_delim)d$(date_delim)Y"
@@ -336,7 +336,7 @@ function rle(v::AbstractVector{T}) where T
     push!(lens, cl)
     return (vals, lens)
 end
-    
+
 function transformeer(df::AbstractDataFrame,
                       transformation::AbstractString;
                       num::AbstractString="",
