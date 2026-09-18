@@ -204,7 +204,7 @@ function prefix2subset(ratios::AbstractDataFrame,
 end
 export prefix2subset
 
-function automatic_datetime(datetime_string::AbstractString)
+function automatic_datetime(datetime_string::AbstractString; day_first::Bool=false)
     if datetime_string == "n/a"
         return nothing
     elseif occursin(r"-", datetime_string)
@@ -224,13 +224,13 @@ function automatic_datetime(datetime_string::AbstractString)
     datetime_vector = split(datetime_string, r"[-\/ ]")
     if length(datetime_vector[1]) == 4
         date_format = "Y$(date_delim)m$(date_delim)d"
-    elseif tryparse(Int,datetime_vector[1]) > 12
+    elseif day_first === true || tryparse(Int, datetime_vector[1]) > 12
         date_format = "d$(date_delim)m$(date_delim)Y"
     else
         date_format = "m$(date_delim)d$(date_delim)Y"
     end
     datetime_format = DateFormat(date_format * " " * time_format)
-    datetime = Dates.DateTime(datetime_string,datetime_format)
+    datetime = Dates.DateTime(datetime_string, datetime_format)
     if Dates.Year(datetime) < Dates.Year(100)
         datetime += Dates.Year(2000)
     end
@@ -279,7 +279,7 @@ function rle(v::AbstractVector{T}) where T
     push!(lens, cl)
     return (vals, lens)
 end
-    
+
 function transformeer(df::AbstractDataFrame,
                       transformation::AbstractString;
                       num::AbstractString="",
