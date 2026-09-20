@@ -48,10 +48,16 @@ end
 function getConcentrations(method::Cmethod,
     refmat::AbstractString)
     all_concs = get(_KJ["glass"], refmat)
+    els_rm = names(all_concs)
     channels = getChannels(method)
     out = DataFrame(zeros(1, length(channels)), channels)
     for (ch, el) in pairs(method.elements)
-        out[1, ch] = all_concs[el]
+        if in(el, els_rm)
+            out[1, ch] = all_concs[el]
+        else
+            @warn "$el missing from reference material ($refmat) concentrations. Output for this element will be NaN."
+            out[1, ch] = NaN
+        end
     end
     return out
 end
