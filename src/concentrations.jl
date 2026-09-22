@@ -46,11 +46,10 @@ function concentrations(run::Vector{Sample},
     nc = 2*ne
     mat = zeros(nr, nc)
     conc = nothing
-    for key in keys(method.groups)
+    for (key, refmat) in method.groups
         if !haskey(method.internal, key)
             isname, _ = get_internal("default", method.internal)
-            method.groups[key]
-            refconcs = getConcentrations(method, key)
+            refconcs = getConcentrations(method, refmat)
             push!(method.internal, Pair(method.groups[key], (isname, refconcs[1, isname])))
         end
     end
